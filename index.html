@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Para Ti 💖</title>
+<title>Para ti mi amorcito💖</title>
 
 <style>
 body{
@@ -87,26 +87,75 @@ button{
 <button id="si" onclick="aceptar()">Sí 💖</button>
 <button id="no" onmouseover="mover()">No jeje</button>
 
+<div id="player"></div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+
 <script>
 
 let score = 0;
 let velocidadBase = 2;
 let fotos = [];
+let player;
+let volumen = 0;
+
+function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+        height: '0',
+        width: '0',
+        videoId: 'FM7ALFsOH4g',
+        playerVars: {
+            'autoplay': 0,
+            'controls': 0,
+            'loop': 1,
+            'playlist': 'FM7ALFsOH4g'
+        }
+    });
+}
 
 function aceptar(){
+
     document.body.innerHTML = `
         <div id="score">Puntos: 0</div>
         <div id="contenedorFotos"></div>
         <h1 style="position:fixed; bottom:20px; width:100%;">
             Te amo infinitamente💖<br>y eternamente❤️
         </h1>
-        <audio autoplay loop>
-            <source src="musica.mp3" type="audio/mpeg">
-        </audio>
+        <div id="player"></div>
     `;
+
+    // Volver a crear el reproductor
+    player = new YT.Player('player', {
+        height: '0',
+        width: '0',
+        videoId: 'FM7ALFsOH4g',
+        playerVars: {
+            'autoplay': 1,
+            'controls': 0,
+            'loop': 1,
+            'playlist': 'FM7ALFsOH4g'
+        },
+        events: {
+            'onReady': function(event){
+                event.target.setVolume(0);
+                fadeIn();
+            }
+        }
+    });
 
     generarFotos();
     generarCorazones();
+}
+
+function fadeIn(){
+    volumen = 0;
+    let fade = setInterval(() => {
+        volumen += 5;
+        if(volumen >= 60){
+            clearInterval(fade);
+        }
+        player.setVolume(volumen);
+    }, 200);
 }
 
 function mover(){
@@ -148,7 +197,6 @@ function convertirEnCorazon(img){
 
     score++;
     velocidadBase += 0.2;
-
     document.getElementById("score").innerText = "Puntos: " + score;
 
     const x = img.offsetLeft;
