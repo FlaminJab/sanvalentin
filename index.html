@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Para Ti 💖</title>
+<title>Para ti mi amorcito💖</title>
 
 <style>
 body{
@@ -19,12 +19,7 @@ body{
     color:white;
 }
 
-h1{
-    font-size:40px;
-    z-index:2;
-}
-
-h2{
+h1, h2{
     z-index:2;
 }
 
@@ -60,11 +55,30 @@ button{
     z-index:1;
 }
 
-.foto{
-    width:140px;
+.Foto{
+    width:110px;
     position:absolute;
     border-radius:15px;
     box-shadow:0 0 15px rgba(0,0,0,0.4);
+}
+
+/* Corazones */
+.corazon{
+    position:fixed;
+    color:#ff2e63;
+    animation:flotar 4s linear forwards;
+    z-index:3;
+}
+
+@keyframes flotar{
+    0%{
+        transform:translateY(100vh);
+        opacity:1;
+    }
+    100%{
+        transform:translateY(-10vh);
+        opacity:0;
+    }
 }
 </style>
 </head>
@@ -83,12 +97,7 @@ function aceptar(){
     <h1>Te amo infintamente💖</h1>
     <h2>y eternamente❤️</h2>
 
-    <div class="contenedor">
-        <img src="Foto1.jpg" class="foto">
-        <img src="Foto2.jpg" class="foto">
-        <img src="Foto3.jpg" class="foto">
-        <img src="Foto4.jpg" class="foto">
-    </div>
+    <div class="contenedor" id="contenedorFotos"></div>
 
     <iframe width="0" height="0"
     src="https://www.youtube.com/embed/FM7ALFsOH4g?autoplay=1&loop=1&playlist=FM7ALFsOH4g"
@@ -96,8 +105,9 @@ function aceptar(){
     allow="autoplay">
     </iframe>
     `;
-    
-    iniciarAnimacion();
+
+    generarFotos();
+    iniciarCorazones();
 }
 
 function mover(){
@@ -109,38 +119,69 @@ function mover(){
     boton.style.position = "absolute";
 }
 
-function iniciarAnimacion(){
-    const fotos = document.querySelectorAll('.foto');
+/* Generar 15 Fotos */
+function generarFotos(){
+    const contenedor = document.getElementById("contenedorFotos");
 
-    fotos.forEach(foto => {
-        let x = Math.random() * (window.innerWidth - 150);
-        let y = Math.random() * (window.innerHeight - 150);
+    for(let i = 1; i <= 15; i++){
+        const img = document.createElement("img");
+        img.src = "Foto" + i + ".jpg";
+        img.classList.add("Foto");
+        contenedor.appendChild(img);
+    }
+
+    iniciarAnimacion();
+}
+
+/* Animación rebote */
+function iniciarAnimacion(){
+    const Fotos = document.querySelectorAll('.Foto');
+
+    Fotos.forEach(Foto => {
+        let x = Math.random() * (window.innerWidth - 110);
+        let y = Math.random() * (window.innerHeight - 110);
         let dx = (Math.random() * 2 + 1);
         let dy = (Math.random() * 2 + 1);
 
-        foto.style.left = x + 'px';
-        foto.style.top = y + 'px';
+        Foto.style.left = x + 'px';
+        Foto.style.top = y + 'px';
 
         function animar(){
             x += dx;
             y += dy;
 
-            if(x <= 0 || x >= window.innerWidth - 150){
+            if(x <= 0 || x >= window.innerWidth - 110){
                 dx = -dx;
             }
 
-            if(y <= 0 || y >= window.innerHeight - 150){
+            if(y <= 0 || y >= window.innerHeight - 110){
                 dy = -dy;
             }
 
-            foto.style.left = x + 'px';
-            foto.style.top = y + 'px';
+            Foto.style.left = x + 'px';
+            Foto.style.top = y + 'px';
 
             requestAnimationFrame(animar);
         }
 
         animar();
     });
+}
+
+/* Corazones flotando */
+function iniciarCorazones(){
+    setInterval(() => {
+        const corazon = document.createElement("div");
+        corazon.classList.add("corazon");
+        corazon.innerHTML = "💖";
+        corazon.style.left = Math.random() * 100 + "vw";
+        corazon.style.fontSize = (Math.random() * 20 + 15) + "px";
+        document.body.appendChild(corazon);
+
+        setTimeout(() => {
+            corazon.remove();
+        }, 4000);
+    }, 250);
 }
 
 </script>
