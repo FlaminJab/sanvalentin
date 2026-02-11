@@ -175,6 +175,13 @@ function mover(){
 function aceptar(){
 
     const flash = document.getElementById("flash");
+
+    // Ocultar pregunta y botones
+    document.querySelector("h1").style.display = "none";
+    document.getElementById("si").style.display = "none";
+    document.getElementById("no").style.display = "none";
+
+    // Flash blanco
     flash.style.opacity = "1";
 
     setTimeout(() => {
@@ -183,17 +190,28 @@ function aceptar(){
 
     setTimeout(() => {
 
-        document.body.innerHTML = `
-            <div id="flash"></div>
-            <div id="score">Puntos: 0</div>
-            <div id="contenedorFotos"></div>
-            <h1 style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);">
-                Te amo infinitamente💖<br>y eternamente❤️
-            </h1>
-            <div id="player"></div>
-        `;
-
+        // Cambiar fondo a rosa
         document.body.style.background = "linear-gradient(45deg, #ff758c, #ff7eb3)";
+
+        // Crear marcador
+        const marcador = document.createElement("div");
+        marcador.id = "score";
+        marcador.innerText = "Puntos: 0";
+        document.body.appendChild(marcador);
+
+        // Crear contenedor fotos
+        const contenedor = document.createElement("div");
+        contenedor.id = "contenedorFotos";
+        document.body.appendChild(contenedor);
+
+        // Texto central
+        const texto = document.createElement("h1");
+        texto.innerHTML = "Te amo infinitamente💖<br>y eternamente❤️";
+        texto.style.position = "fixed";
+        texto.style.top = "50%";
+        texto.style.left = "50%";
+        texto.style.transform = "translate(-50%,-50%)";
+        document.body.appendChild(texto);
 
         iniciarMusica();
         generarFotos();
@@ -322,3 +340,4 @@ function generarTeAmos(){
 
 </body>
 </html>
+
