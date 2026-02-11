@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Para ti amocito 💖</title>
+<title>Para Ti 💖</title>
 
 <style>
 body{
@@ -17,11 +17,11 @@ body{
     flex-direction:column;
     text-align:center;
     color:white;
-    transition: background 1s ease;
 }
 
 h1{
     font-size:40px;
+    z-index:2;
 }
 
 button{
@@ -32,6 +32,7 @@ button{
     border-radius:12px;
     cursor:pointer;
     position:relative;
+    z-index:2;
 }
 
 #si{
@@ -45,58 +46,63 @@ button{
     position:absolute;
 }
 
-.foto{
-    width:120px;
-    position:absolute;
-    border-radius:15px;
-    box-shadow:0 0 15px rgba(0,0,0,0.4);
-    cursor:pointer;
+#flash{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:white;
+    top:0;
+    left:0;
     opacity:0;
-    transition: opacity 1s ease;
+    pointer-events:none;
+    transition:opacity 0.3s;
+    z-index:999;
 }
 
-#score{
-    position:fixed;
-    top:20px;
-    left:20px;
-    font-size:20px;
-    font-weight:bold;
-    z-index:1000;
-}
-
-#mensajeFinal{
-    position:fixed;
-    top:50%;
-    left:50%;
-    transform:translate(-50%, -50%);
-    font-size:40px;
-    font-weight:bold;
-    text-align:center;
-    z-index:500;
+.foto{
+    position:absolute;
+    width:120px;
+    border-radius:15px;
+    cursor:pointer;
 }
 
 .corazon{
     position:fixed;
-    font-size:20px;
-    animation: flotar 4s linear infinite;
+    color:#ff2e63;
+    font-size:25px;
+    animation: flotar 3s linear forwards;
+    pointer-events:none;
 }
 
 @keyframes flotar{
-    0%{ transform:translateY(0) scale(1); opacity:1; }
-    100%{ transform:translateY(-800px) scale(1.5); opacity:0; }
+    0%{ transform:translateY(0); opacity:1; }
+    100%{ transform:translateY(-150px); opacity:0; }
 }
 
-#flash{
+.teamo{
     position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:white;
+    font-size:22px;
+    font-weight:bold;
+    color:white;
     opacity:0;
+    animation: flotarTexto 3s ease-out forwards;
     pointer-events:none;
-    transition: opacity 0.3s ease;
-    z-index:9999;
+    text-shadow: 0 0 10px rgba(255,255,255,0.8);
+}
+
+@keyframes flotarTexto{
+    0%{ opacity:0; transform:translateY(0px) scale(0.8); }
+    30%{ opacity:1; }
+    100%{ opacity:0; transform:translateY(-60px) scale(1.2); }
+}
+
+#score{
+    position:fixed;
+    top:10px;
+    left:10px;
+    font-size:22px;
+    font-weight:bold;
+    z-index:3;
 }
 </style>
 </head>
@@ -106,77 +112,51 @@ button{
 <div id="flash"></div>
 
 <h1>¿Puedo ser tu San Valentín amocito? 💘</h1>
+
 <button id="si" onclick="aceptar()">Sí 💖</button>
 <button id="no" onmouseover="mover()">No jeje</button>
 
 <div id="player"></div>
-<script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
 
+let player;
+let volumen = 0;
 let score = 0;
 let velocidadBase = 2;
 let fotos = [];
-let player;
-let volumen = 0;
 
-function aceptar(){
+const idiomas = [
+"Te amo","I love you","Je t’aime","Ti amo","Ich liebe dich",
+"Eu te amo","愛してる","사랑해","我爱你",
+"Я тебя люблю","Te iubesc","Ik hou van jou",
+"Seni seviyorum","Minä rakastan sinua","Σ’ αγαπώ"
+];
 
-    const flash = document.getElementById("flash");
-
-    // FLASH
-    flash.style.opacity = "1";
-
-    setTimeout(() => {
-        flash.style.opacity = "0";
-    }, 200);
-
-    setTimeout(() => {
-
-        document.body.innerHTML = `
-            <div id="flash"></div>
-            <div id="score">Puntos: 0</div>
-            <div id="contenedorFotos"></div>
-            <div id="mensajeFinal">
-                Te amo infinitamente💖<br>y eternamente❤️
-            </div>
-            <div id="player"></div>
-        `;
-
-        document.body.style.background =
-            "linear-gradient(45deg, #ff758c, #ff7eb3)";
-
-        iniciarMusica();
-        generarFotos();
-        generarCorazones();
-
-    }, 300);
-}
-
-function iniciarMusica(){
+function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
         height: '0',
         width: '0',
         videoId: 'FM7ALFsOH4g',
         playerVars: {
-            autoplay: 1,
-            controls: 0,
-            loop: 1,
-            playlist: 'FM7ALFsOH4g'
-        },
-        events: {
-            onReady: function(event){
-                event.target.setVolume(0);
-                fadeIn();
-            }
+            'autoplay': 0,
+            'controls': 0,
+            'loop': 1,
+            'playlist': 'FM7ALFsOH4g'
         }
     });
 }
 
-function fadeIn(){
-    volumen = 0;
+let tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+document.body.appendChild(tag);
+
+function iniciarMusica(){
+    player.playVideo();
+    player.setVolume(0);
+
     let fade = setInterval(() => {
-        volumen += 5;
+        volumen += 3;
         if(volumen >= 60){
             clearInterval(fade);
         }
@@ -192,125 +172,150 @@ function mover(){
     boton.style.top = y + "px";
 }
 
+function aceptar(){
+
+    const flash = document.getElementById("flash");
+    flash.style.opacity = "1";
+
+    setTimeout(() => {
+        flash.style.opacity = "0";
+    }, 200);
+
+    setTimeout(() => {
+
+        document.body.innerHTML = `
+            <div id="flash"></div>
+            <div id="score">Puntos: 0</div>
+            <div id="contenedorFotos"></div>
+            <h1 style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);">
+                Te amo infinitamente💖<br>y eternamente❤️
+            </h1>
+            <div id="player"></div>
+        `;
+
+        document.body.style.background = "linear-gradient(45deg, #ff758c, #ff7eb3)";
+
+        iniciarMusica();
+        generarFotos();
+        generarCorazones();
+        setInterval(generarTeAmos, 800);
+
+    }, 300);
+}
+
 function generarFotos(){
+
     const contenedor = document.getElementById("contenedorFotos");
 
-    for(let i = 1; i <= 15; i++){
+    for(let i=1; i<=15; i++){
 
-        setTimeout(() => {
+        let img = document.createElement("img");
+        img.src = "Foto" + i + ".jpg";
+        img.className = "foto";
 
-            const img = document.createElement("img");
-            img.src = "Foto" + i + ".jpg";
-            img.classList.add("foto");
+        img.style.left = Math.random() * window.innerWidth + "px";
+        img.style.top = Math.random() * window.innerHeight + "px";
 
-            posicionarAleatorio(img);
+        let dx = (Math.random() * velocidadBase) + 1;
+        let dy = (Math.random() * velocidadBase) + 1;
 
-            img.dx = (Math.random() * 2 + 1) *
-                     (Math.random() < 0.5 ? -1 : 1);
-            img.dy = (Math.random() * 2 + 1) *
-                     (Math.random() < 0.5 ? -1 : 1);
+        img.onclick = () => {
+            score++;
+            document.getElementById("score").innerText = "Puntos: " + score;
 
-            img.addEventListener("click",
-                () => convertirEnCorazon(img));
+            velocidadBase += 0.2;
 
-            fotos.push(img);
-            contenedor.appendChild(img);
+            crearCorazon(img.offsetLeft, img.offsetTop);
 
-            setTimeout(() => {
-                img.style.opacity = "1";
-            }, 50);
+            img.remove();
+            respawnFoto(contenedor);
+        };
 
-        }, i * 200);
+        contenedor.appendChild(img);
+
+        moverFoto(img, dx, dy);
+    }
+}
+
+function moverFoto(img, dx, dy){
+
+    function animar(){
+        let x = img.offsetLeft + dx;
+        let y = img.offsetTop + dy;
+
+        if(x + img.width >= window.innerWidth || x <= 0) dx = -dx;
+        if(y + img.height >= window.innerHeight || y <= 0) dy = -dy;
+
+        img.style.left = x + "px";
+        img.style.top = y + "px";
+
+        requestAnimationFrame(animar);
     }
 
     animar();
 }
 
-function posicionarAleatorio(img){
-    img.style.left =
-        Math.random() * (window.innerWidth - 150) + "px";
-    img.style.top =
-        Math.random() * (window.innerHeight - 150) + "px";
+function respawnFoto(contenedor){
+
+    let img = document.createElement("img");
+    img.src = "Foto" + (Math.floor(Math.random()*15)+1) + ".jpg";
+    img.className = "foto";
+
+    img.style.left = Math.random() * window.innerWidth + "px";
+    img.style.top = Math.random() * window.innerHeight + "px";
+
+    let dx = (Math.random() * velocidadBase) + 1;
+    let dy = (Math.random() * velocidadBase) + 1;
+
+    img.onclick = () => {
+        score++;
+        document.getElementById("score").innerText = "Puntos: " + score;
+
+        velocidadBase += 0.2;
+
+        crearCorazon(img.offsetLeft, img.offsetTop);
+
+        img.remove();
+        respawnFoto(contenedor);
+    };
+
+    contenedor.appendChild(img);
+    moverFoto(img, dx, dy);
 }
 
-function convertirEnCorazon(img){
-
-    score++;
-    velocidadBase += 0.2;
-
-    document.getElementById("score").innerText =
-        "Puntos: " + score;
-
-    const x = img.offsetLeft;
-    const y = img.offsetTop;
-
-    img.style.display = "none";
-
-    const corazon = document.createElement("div");
+function crearCorazon(x,y){
+    let corazon = document.createElement("div");
+    corazon.className = "corazon";
     corazon.innerHTML = "💖";
-    corazon.style.position = "absolute";
     corazon.style.left = x + "px";
     corazon.style.top = y + "px";
-    corazon.style.fontSize = "40px";
-    corazon.style.transition = "all 0.6s ease";
-    corazon.style.opacity = "1";
-
     document.body.appendChild(corazon);
 
-    setTimeout(() => {
-        corazon.style.transform = "scale(1.6)";
-        corazon.style.opacity = "0";
-    }, 50);
-
-    setTimeout(() => {
-        corazon.remove();
-        posicionarAleatorio(img);
-        img.style.display = "block";
-    }, 600);
-}
-
-function animar(){
-    fotos.forEach(img => {
-
-        if(img.style.display === "none") return;
-
-        let x = img.offsetLeft;
-        let y = img.offsetTop;
-
-        x += img.dx * velocidadBase;
-        y += img.dy * velocidadBase;
-
-        if(x <= 0 || x >= window.innerWidth - 120){
-            img.dx *= -1;
-        }
-
-        if(y <= 0 || y >= window.innerHeight - 120){
-            img.dy *= -1;
-        }
-
-        img.style.left = x + "px";
-        img.style.top = y + "px";
-    });
-
-    requestAnimationFrame(animar);
+    setTimeout(()=>{ corazon.remove(); },3000);
 }
 
 function generarCorazones(){
-    setInterval(() => {
-        const corazon = document.createElement("div");
-        corazon.classList.add("corazon");
+    setInterval(()=>{
+        let corazon = document.createElement("div");
+        corazon.className = "corazon";
         corazon.innerHTML = "💗";
-        corazon.style.left =
-            Math.random() * window.innerWidth + "px";
-        corazon.style.bottom = "0px";
-
+        corazon.style.left = Math.random()*window.innerWidth+"px";
+        corazon.style.top = window.innerHeight+"px";
         document.body.appendChild(corazon);
 
-        setTimeout(() => {
-            corazon.remove();
-        }, 4000);
+        setTimeout(()=>{ corazon.remove(); },3000);
+    },500);
+}
 
-    }, 300);
+function generarTeAmos(){
+    const frase = document.createElement("div");
+    frase.className = "teamo";
+    frase.innerText = idiomas[Math.floor(Math.random() * idiomas.length)];
+    frase.style.left = Math.random() * window.innerWidth + "px";
+    frase.style.top = Math.random() * window.innerHeight + "px";
+    document.body.appendChild(frase);
+
+    setTimeout(()=>{ frase.remove(); },3000);
 }
 
 </script>
