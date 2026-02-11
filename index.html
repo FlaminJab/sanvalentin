@@ -21,6 +21,11 @@ body{
 
 h1{
     font-size:40px;
+    z-index:2;
+}
+
+h2{
+    z-index:2;
 }
 
 button{
@@ -31,6 +36,7 @@ button{
     border-radius:12px;
     cursor:pointer;
     position:relative;
+    z-index:2;
 }
 
 #si{
@@ -44,11 +50,21 @@ button{
     position:absolute;
 }
 
-img{
-    width:250px;
-    border-radius:20px;
-    margin-top:20px;
-    box-shadow:0 0 20px rgba(0,0,0,0.3);
+.contenedor{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+    z-index:1;
+}
+
+.foto{
+    width:140px;
+    position:absolute;
+    border-radius:15px;
+    box-shadow:0 0 15px rgba(0,0,0,0.4);
 }
 </style>
 </head>
@@ -66,14 +82,22 @@ function aceptar(){
     document.body.innerHTML = `
     <h1>Te amo infintamente💖</h1>
     <h2>y eternamente❤️</h2>
-    <img src="https://i.pinimg.com/1200x/3a/99/6e/3a996e30abdea979afe64ecab506fea0.jpg">
-    
+
+    <div class="contenedor">
+        <img src="Foto1.jpg" class="foto">
+        <img src="Foto2.jpg" class="foto">
+        <img src="Foto3.jpg" class="foto">
+        <img src="Foto4.jpg" class="foto">
+    </div>
+
     <iframe width="0" height="0"
     src="https://www.youtube.com/embed/FM7ALFsOH4g?autoplay=1&loop=1&playlist=FM7ALFsOH4g"
     frameborder="0"
     allow="autoplay">
     </iframe>
     `;
+    
+    iniciarAnimacion();
 }
 
 function mover(){
@@ -83,6 +107,40 @@ function mover(){
     boton.style.left = x + "px";
     boton.style.top = y + "px";
     boton.style.position = "absolute";
+}
+
+function iniciarAnimacion(){
+    const fotos = document.querySelectorAll('.foto');
+
+    fotos.forEach(foto => {
+        let x = Math.random() * (window.innerWidth - 150);
+        let y = Math.random() * (window.innerHeight - 150);
+        let dx = (Math.random() * 2 + 1);
+        let dy = (Math.random() * 2 + 1);
+
+        foto.style.left = x + 'px';
+        foto.style.top = y + 'px';
+
+        function animar(){
+            x += dx;
+            y += dy;
+
+            if(x <= 0 || x >= window.innerWidth - 150){
+                dx = -dx;
+            }
+
+            if(y <= 0 || y >= window.innerHeight - 150){
+                dy = -dy;
+            }
+
+            foto.style.left = x + 'px';
+            foto.style.top = y + 'px';
+
+            requestAnimationFrame(animar);
+        }
+
+        animar();
+    });
 }
 
 </script>
