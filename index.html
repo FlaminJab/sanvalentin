@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Para ti amorcito💖</title>
+<title>Para ti amocito 💖</title>
 
 <style>
 body{
@@ -64,6 +64,17 @@ button{
     z-index:1000;
 }
 
+#mensajeFinal{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    font-size:40px;
+    font-weight:bold;
+    text-align:center;
+    z-index:500;
+}
+
 .corazon{
     position:fixed;
     font-size:20px;
@@ -111,29 +122,29 @@ let volumen = 0;
 
 function aceptar(){
 
-    // FLASH BLANCO
     const flash = document.getElementById("flash");
+
+    // FLASH
     flash.style.opacity = "1";
 
     setTimeout(() => {
         flash.style.opacity = "0";
     }, 200);
 
-    // Cambiar fondo a rosa después del flash
     setTimeout(() => {
-        document.body.style.background = "linear-gradient(45deg, #ff758c, #ff7eb3)";
-    }, 200);
 
-    // Limpiar contenido inicial
-    setTimeout(() => {
-        document.body.innerHTML += `
+        document.body.innerHTML = `
+            <div id="flash"></div>
             <div id="score">Puntos: 0</div>
             <div id="contenedorFotos"></div>
-            <h1 style="position:fixed; bottom:20px; width:100%;">
+            <div id="mensajeFinal">
                 Te amo infinitamente💖<br>y eternamente❤️
-            </h1>
+            </div>
             <div id="player"></div>
         `;
+
+        document.body.style.background =
+            "linear-gradient(45deg, #ff758c, #ff7eb3)";
 
         iniciarMusica();
         generarFotos();
@@ -148,13 +159,13 @@ function iniciarMusica(){
         width: '0',
         videoId: 'FM7ALFsOH4g',
         playerVars: {
-            'autoplay': 1,
-            'controls': 0,
-            'loop': 1,
-            'playlist': 'FM7ALFsOH4g'
+            autoplay: 1,
+            controls: 0,
+            loop: 1,
+            playlist: 'FM7ALFsOH4g'
         },
         events: {
-            'onReady': function(event){
+            onReady: function(event){
                 event.target.setVolume(0);
                 fadeIn();
             }
@@ -185,6 +196,7 @@ function generarFotos(){
     const contenedor = document.getElementById("contenedorFotos");
 
     for(let i = 1; i <= 15; i++){
+
         setTimeout(() => {
 
             const img = document.createElement("img");
@@ -193,10 +205,13 @@ function generarFotos(){
 
             posicionarAleatorio(img);
 
-            img.dx = (Math.random() * 2 + 1) * (Math.random() < 0.5 ? -1 : 1);
-            img.dy = (Math.random() * 2 + 1) * (Math.random() < 0.5 ? -1 : 1);
+            img.dx = (Math.random() * 2 + 1) *
+                     (Math.random() < 0.5 ? -1 : 1);
+            img.dy = (Math.random() * 2 + 1) *
+                     (Math.random() < 0.5 ? -1 : 1);
 
-            img.addEventListener("click", () => convertirEnCorazon(img));
+            img.addEventListener("click",
+                () => convertirEnCorazon(img));
 
             fotos.push(img);
             contenedor.appendChild(img);
@@ -205,21 +220,26 @@ function generarFotos(){
                 img.style.opacity = "1";
             }, 50);
 
-        }, i * 200); // aparecen poco a poco
+        }, i * 200);
     }
 
     animar();
 }
 
 function posicionarAleatorio(img){
-    img.style.left = Math.random() * (window.innerWidth - 150) + "px";
-    img.style.top = Math.random() * (window.innerHeight - 150) + "px";
+    img.style.left =
+        Math.random() * (window.innerWidth - 150) + "px";
+    img.style.top =
+        Math.random() * (window.innerHeight - 150) + "px";
 }
 
 function convertirEnCorazon(img){
+
     score++;
     velocidadBase += 0.2;
-    document.getElementById("score").innerText = "Puntos: " + score;
+
+    document.getElementById("score").innerText =
+        "Puntos: " + score;
 
     const x = img.offsetLeft;
     const y = img.offsetTop;
@@ -280,7 +300,8 @@ function generarCorazones(){
         const corazon = document.createElement("div");
         corazon.classList.add("corazon");
         corazon.innerHTML = "💗";
-        corazon.style.left = Math.random() * window.innerWidth + "px";
+        corazon.style.left =
+            Math.random() * window.innerWidth + "px";
         corazon.style.bottom = "0px";
 
         document.body.appendChild(corazon);
