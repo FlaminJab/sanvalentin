@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Para ti mi amorcito💖</title>
+<title>Para Ti 💖</title>
 
 <style>
 body{
@@ -19,8 +19,8 @@ body{
     color:white;
 }
 
-h1, h2{
-    z-index:2;
+h1{
+    font-size:40px;
 }
 
 button{
@@ -31,7 +31,6 @@ button{
     border-radius:12px;
     cursor:pointer;
     position:relative;
-    z-index:2;
 }
 
 #si{
@@ -45,38 +44,36 @@ button{
     position:absolute;
 }
 
-.contenedor{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100vw;
-    height:100vh;
-    overflow:hidden;
-    z-index:1;
-}
-
-.Foto{
-    width:110px;
+.foto{
+    width:120px;
     position:absolute;
     border-radius:15px;
     box-shadow:0 0 15px rgba(0,0,0,0.4);
+    cursor:pointer;
 }
 
-/* Corazones */
+#score{
+    position:fixed;
+    top:20px;
+    left:20px;
+    font-size:20px;
+    font-weight:bold;
+    z-index:1000;
+}
+
 .corazon{
     position:fixed;
-    color:#ff2e63;
-    animation:flotar 4s linear forwards;
-    z-index:3;
+    font-size:20px;
+    animation: flotar 4s linear infinite;
 }
 
 @keyframes flotar{
     0%{
-        transform:translateY(100vh);
+        transform:translateY(0) scale(1);
         opacity:1;
     }
     100%{
-        transform:translateY(-10vh);
+        transform:translateY(-800px) scale(1.5);
         opacity:0;
     }
 }
@@ -92,22 +89,24 @@ button{
 
 <script>
 
+let score = 0;
+let velocidadBase = 2;
+let fotos = [];
+
 function aceptar(){
     document.body.innerHTML = `
-    <h1>Te amo infintamente💖</h1>
-    <h2>y eternamente❤️</h2>
-
-    <div class="contenedor" id="contenedorFotos"></div>
-
-    <iframe width="0" height="0"
-    src="https://www.youtube.com/embed/FM7ALFsOH4g?autoplay=1&loop=1&playlist=FM7ALFsOH4g"
-    frameborder="0"
-    allow="autoplay">
-    </iframe>
+        <div id="score">Puntos: 0</div>
+        <div id="contenedorFotos"></div>
+        <h1 style="position:fixed; bottom:20px; width:100%;">
+            Te amo infinitamente💖<br>y eternamente❤️
+        </h1>
+        <audio autoplay loop>
+            <source src="musica.mp3" type="audio/mpeg">
+        </audio>
     `;
 
     generarFotos();
-    iniciarCorazones();
+    generarCorazones();
 }
 
 function mover(){
@@ -116,72 +115,111 @@ function mover(){
     let y = Math.random() * (window.innerHeight - 50);
     boton.style.left = x + "px";
     boton.style.top = y + "px";
-    boton.style.position = "absolute";
 }
 
-/* Generar 15 Fotos */
 function generarFotos(){
     const contenedor = document.getElementById("contenedorFotos");
 
     for(let i = 1; i <= 15; i++){
         const img = document.createElement("img");
         img.src = "Foto" + i + ".jpg";
-        img.classList.add("Foto");
+        img.classList.add("foto");
+
+        posicionarAleatorio(img);
+
+        img.dx = (Math.random() * 2 + 1) * (Math.random() < 0.5 ? -1 : 1);
+        img.dy = (Math.random() * 2 + 1) * (Math.random() < 0.5 ? -1 : 1);
+
+        img.addEventListener("click", () => convertirEnCorazon(img));
+
+        fotos.push(img);
         contenedor.appendChild(img);
     }
 
-    iniciarAnimacion();
+    animar();
 }
 
-/* Animación rebote */
-function iniciarAnimacion(){
-    const Fotos = document.querySelectorAll('.Foto');
+function posicionarAleatorio(img){
+    img.style.left = Math.random() * (window.innerWidth - 150) + "px";
+    img.style.top = Math.random() * (window.innerHeight - 150) + "px";
+}
 
-    Fotos.forEach(Foto => {
-        let x = Math.random() * (window.innerWidth - 110);
-        let y = Math.random() * (window.innerHeight - 110);
-        let dx = (Math.random() * 2 + 1);
-        let dy = (Math.random() * 2 + 1);
+function convertirEnCorazon(img){
 
-        Foto.style.left = x + 'px';
-        Foto.style.top = y + 'px';
+    score++;
+    velocidadBase += 0.2;
 
-        function animar(){
-            x += dx;
-            y += dy;
+    document.getElementById("score").innerText = "Puntos: " + score;
 
-            if(x <= 0 || x >= window.innerWidth - 110){
-                dx = -dx;
-            }
+    const x = img.offsetLeft;
+    const y = img.offsetTop;
 
-            if(y <= 0 || y >= window.innerHeight - 110){
-                dy = -dy;
-            }
+    img.style.display = "none";
 
-            Foto.style.left = x + 'px';
-            Foto.style.top = y + 'px';
+    const corazon = document.createElement("div");
+    corazon.innerHTML = "💖";
+    corazon.style.position = "absolute";
+    corazon.style.left = x + "px";
+    corazon.style.top = y + "px";
+    corazon.style.fontSize = "40px";
+    corazon.style.transition = "all 0.6s ease";
+    corazon.style.opacity = "1";
 
-            requestAnimationFrame(animar);
+    document.body.appendChild(corazon);
+
+    setTimeout(() => {
+        corazon.style.transform = "scale(1.6)";
+        corazon.style.opacity = "0";
+    }, 50);
+
+    setTimeout(() => {
+        corazon.remove();
+        posicionarAleatorio(img);
+        img.style.display = "block";
+    }, 600);
+}
+
+function animar(){
+    fotos.forEach(img => {
+
+        if(img.style.display === "none") return;
+
+        let x = img.offsetLeft;
+        let y = img.offsetTop;
+
+        x += img.dx * velocidadBase;
+        y += img.dy * velocidadBase;
+
+        if(x <= 0 || x >= window.innerWidth - 120){
+            img.dx *= -1;
         }
 
-        animar();
+        if(y <= 0 || y >= window.innerHeight - 120){
+            img.dy *= -1;
+        }
+
+        img.style.left = x + "px";
+        img.style.top = y + "px";
     });
+
+    requestAnimationFrame(animar);
 }
 
-/* Corazones flotando */
-function iniciarCorazones(){
+function generarCorazones(){
     setInterval(() => {
         const corazon = document.createElement("div");
         corazon.classList.add("corazon");
-        corazon.innerHTML = "💖";
-        corazon.style.left = Math.random() * 100 + "vw";
-        corazon.style.fontSize = (Math.random() * 20 + 15) + "px";
+        corazon.innerHTML = "💗";
+        corazon.style.left = Math.random() * window.innerWidth + "px";
+        corazon.style.bottom = "0px";
+
         document.body.appendChild(corazon);
 
         setTimeout(() => {
             corazon.remove();
         }, 4000);
-    }, 250);
+
+    }, 300);
 }
 
 </script>
